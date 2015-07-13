@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="3779c114-5d34-4150-a6e2-049b15385f6a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:60926/SubdivisionService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SubdivisionService.wsdl" MetadataType="Wsdl" ID="c7c24080-f109-4aad-b2f5-3002bf371be9" SourceId="1" SourceUrl="http://localhost:60926/SubdivisionService.svc?wsdl" />
+    <MetadataFile FileName="SubdivisionService.disco" MetadataType="Disco" ID="b4b23782-a6ca-4771-997c-d692d69c2764" SourceId="1" SourceUrl="http://localhost:60926/SubdivisionService.svc?disco" />
+    <MetadataFile FileName="SubdivisionService.xsd" MetadataType="Schema" ID="b9e3c3a0-cfcc-443e-b524-e8f82c8a031e" SourceId="1" SourceUrl="http://localhost:60926/SubdivisionService.svc?xsd=xsd2" />
+    <MetadataFile FileName="SubdivisionService1.xsd" MetadataType="Schema" ID="76a350c2-5a63-4794-9c22-ec48d74579a8" SourceId="1" SourceUrl="http://localhost:60926/SubdivisionService.svc?xsd=xsd1" />
+    <MetadataFile FileName="SubdivisionService2.xsd" MetadataType="Schema" ID="f2d0e5a0-8179-404c-95aa-db1111d451cc" SourceId="1" SourceUrl="http://localhost:60926/SubdivisionService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
