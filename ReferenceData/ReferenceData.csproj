@@ -84,7 +84,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\NullableIntToIntConverter.cs" />
-    <Compile Include="CustomControls\ComboBoxWithPortionData.cs" />
     <Compile Include="Model\NotificationEntity.cs" />
     <Compile Include="Model\ValidationEntity.cs" />
     <Compile Include="Model\CountryServiceWrapper.cs" />
