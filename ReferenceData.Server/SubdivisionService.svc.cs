@@ -6,28 +6,38 @@ using System.ServiceModel;
 using System.Text;
 using Microsoft.Practices.Unity;
 using ReferenceData.DAL.Model;
+using ReferenceData.Utils.Abstract;
+using ReferenceData.Utils.Concrete;
 
 namespace ReferenceData.Server
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "SubdivisionService" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select SubdivisionService.svc or SubdivisionService.svc.cs at the Solution Explorer and start debugging.
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class SubdivisionService : ISubdivisionService
     {
-        ReferenceData.DAL.Services.SubdivisionService subdivSrv = Container.Instance.UnityContainer.Resolve<ReferenceData.DAL.Services.SubdivisionService>();
+        private ReferenceData.DAL.Services.SubdivisionService subdivSrv = Container.Instance.UnityContainer.Resolve<ReferenceData.DAL.Services.SubdivisionService>();
+        private ICache<int, Model.Subdivision> subdivisionCache = new MemoryCache<int, Model.Subdivision>();
+
+        public SubdivisionService()
+        {
+            subdivisionCache.PutAll(subdivSrv.GetItems().Select(x => new KeyValuePair<int, Model.Subdivision>(x.Id, MapEntityToSubdiv(x))));
+        }
 
         public List<Model.Subdivision> GetSubdivisions()
         {
-            return subdivSrv.GetItems().Select(x => MapEntityToSubdiv(x)).ToList();
+            return subdivisionCache.GetAll().ToList();
         }
 
         public Model.Subdivision GetSubdivisionById(int id)
         {
-            return MapEntityToSubdiv(subdivSrv.GetItem(id));
+            if (!subdivisionCache.Contains(id))
+                subdivisionCache.Put(id, MapEntityToSubdiv(subdivSrv.GetItem(id)));
+
+            return subdivisionCache.Get(id);
         }
 
         public List<Model.Subdivision> GetItemsByCountryId(int id)
         {
-            return subdivSrv.GetItemsByCountryId(id).Select(x => MapEntityToSubdiv(x)).ToList();
+            return subdivisionCache.GetAll().Where(x => x.CountryId == id).ToList();
         }
 
         private Model.Subdivision MapEntityToSubdiv(Subdivision subdv)
@@ -36,7 +46,7 @@ namespace ReferenceData.Server
             {
                 Id = subdv.Id,
                 Description = subdv.Description,
-                CountryId = subdv.Id
+                CountryId = subdv.CountryId
             };
         }
     }

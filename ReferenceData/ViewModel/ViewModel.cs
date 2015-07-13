@@ -18,8 +18,13 @@ namespace ReferenceData.ViewModel
     public class ViewModel : NotificationEntity
     {
         #region Fields
-        private UserServiceWrapper userwWrap;
+        private UserServiceWrapper userService = App.Container.Resolve<UserServiceWrapper>();
+        private CountryServiceWrapper countryService = App.Container.Resolve<CountryServiceWrapper>();
+        private SubDivisionServiceWrapper subdivisionService = App.Container.Resolve<SubDivisionServiceWrapper>();
+        private LocationServiceWrapper locationService = App.Container.Resolve<LocationServiceWrapper>();
+
         private ISubject<UserFullInfo> userSubject;
+
         public ObservableCollection<UserFullInfo> Users { get; private set; }
         public ObservableCollection<Country> Countries { get; private set; }
 
@@ -68,21 +73,21 @@ namespace ReferenceData.ViewModel
             }
         }
 
-        private UserProvider userP;
+        //private UserProvider userP;
 
-        private AsyncVirtualizingCollection<UserFullInfo> _AsyncUser;
-        public AsyncVirtualizingCollection<UserFullInfo> AsyncUser
-        {
-            get { return _AsyncUser; }
-            set
-            {
-                if(_AsyncUser != value)
-                {
-                    _AsyncUser = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        //private AsyncVirtualizingCollection<UserFullInfo> _AsyncUser;
+        //public AsyncVirtualizingCollection<UserFullInfo> AsyncUser
+        //{
+        //    get { return _AsyncUser; }
+        //    set
+        //    {
+        //        if(_AsyncUser != value)
+        //        {
+        //            _AsyncUser = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Commands
@@ -94,16 +99,15 @@ namespace ReferenceData.ViewModel
         #region Constructor
         public ViewModel()
         {
-            userP = new UserProvider(100);
-            AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP);
+            // userP = new UserProvider(100);
+            // AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP);
 
-            //userwWrap = new UserServiceWrapper();
-            //Users = new ObservableCollection<UserFullInfo>();
+            Users = new ObservableCollection<UserFullInfo>();
 
-            Countries = new ObservableCollection<Country>(new CountryServiceWrapper().GetItems());
+            Countries = new ObservableCollection<Country>(countryService.GetItems());
 
-            //var usersObservable = userwWrap.GetItems().ToObservable();
-            //usersObservable.SubscribeOn(new BackgroundScheduler()).ObserveOn(new DispatcherScheduler(Dispatcher.CurrentDispatcher)).Subscribe(userInfo => Users.Add(userInfo));
+            var usersObservable = userService.GetItems().ToObservable();
+            usersObservable.SubscribeOn(new BackgroundScheduler()).ObserveOn(new DispatcherScheduler(Dispatcher.CurrentDispatcher)).Subscribe(userInfo => Users.Add(userInfo));
 
             userSubject = new Subject<UserFullInfo>();
             userSubject.Subscribe(x =>
@@ -128,16 +132,14 @@ namespace ReferenceData.ViewModel
         private void FillSubdivisions(Country country)
         {
             if (country == null) return;
-            SubDivisionServiceWrapper sub = new SubDivisionServiceWrapper();
-            AvailableSubdivisions = new ObservableCollection<Subdivision>(sub.GetItemsByCountryId(country.Id));
+            AvailableSubdivisions = new ObservableCollection<Subdivision>(subdivisionService.GetItemsByCountryId(country.Id));
             if (AvailableLocations != null && AvailableLocations.Count > 0)
                 AvailableLocations.Clear();
         }
         private void FillLocations(Subdivision subdivision)
         {
             if (subdivision == null) return;
-            LocationServiceWrapper locW = new LocationServiceWrapper();
-            AvailableLocations = new ObservableCollection<Location>(locW.GetItemsBySubdivisionId(subdivision.Id));
+            AvailableLocations = new ObservableCollection<Location>(locationService.GetItemsBySubdivisionId(subdivision.Id));
         }
         private void NewMethod()
         {
@@ -146,7 +148,7 @@ namespace ReferenceData.ViewModel
 
         private void SaveMethod()
         {
-            CurrentUser = userwWrap.AddOrUpdate(CurrentUser);
+            CurrentUser = userService.AddOrUpdate(CurrentUser);
 
             if (CurrentUser != null)
             {

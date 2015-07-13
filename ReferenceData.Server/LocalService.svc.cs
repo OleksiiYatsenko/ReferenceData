@@ -7,28 +7,38 @@ using System.Text;
 using ReferenceData.DAL.Model;
 using ReferenceData.DAL.Services;
 using Microsoft.Practices.Unity;
+using ReferenceData.Utils.Abstract;
+using ReferenceData.Utils.Concrete;
 
 namespace ReferenceData.Server
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "LocalService" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select LocalService.svc or LocalService.svc.cs at the Solution Explorer and start debugging.
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class LocalService : ILocalService
     {
-        LocationsService locSrv = Container.Instance.UnityContainer.Resolve<LocationsService>();
+        private LocationsService locSrv = Container.Instance.UnityContainer.Resolve<LocationsService>();
+        private ICache<int, Model.Location> locationCache = new MemoryCache<int, Model.Location>();
+
+        public LocalService()
+        {
+            locationCache.PutAll(locSrv.GetItems().Select(x => new KeyValuePair<int, Model.Location>(x.Id, MapEntityToLocation(x))));
+        }
 
         public List<Model.Location> GetLocations()
         {
-            return locSrv.GetItems().Select(x => MapEntityToLocation(x)).ToList();
+            return locationCache.GetAll().ToList();
         }
 
         public Model.Location GetLocationById(int id)
         {
-            return MapEntityToLocation(locSrv.GetItem(id)); ;
+            if (!locationCache.Contains(id))
+                locationCache.Put(id, MapEntityToLocation(locSrv.GetItem(id)));
+
+            return locationCache.Get(id);
         }
 
         public List<Model.Location> GetLocationsBySubdivisionId(int id)
         {
-            return locSrv.GetLocationsBySubdivisionId(id).Select(x => MapEntityToLocation(x)).ToList(); 
+            return locationCache.GetAll().Where(x => x.SubdivisionId == id).ToList();
         }
 
         private Model.Location MapEntityToLocation(Location loc)

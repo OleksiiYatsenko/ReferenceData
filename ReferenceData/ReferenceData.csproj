@@ -274,6 +274,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ReferenceData.Utils\ReferenceData.Utils.csproj">
+      <Project>{066a3989-3591-477b-9bf1-f8a9ae61ff40}</Project>
+      <Name>ReferenceData.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReferenseData.Model\ReferenceData.Model.csproj">
       <Project>{1403f2f1-a876-4382-a376-2a2bbde329d8}</Project>
       <Name>ReferenceData.Model</Name>

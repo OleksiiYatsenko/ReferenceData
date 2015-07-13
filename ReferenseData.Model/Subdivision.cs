@@ -15,7 +15,7 @@ namespace ReferenceData.Model
         [DataMember]
         public string Description { get; set; }
         [DataMember]
-        public int CountryId { get; set; }
+        public int? CountryId { get; set; }
 
         public bool Equals(Subdivision other)
         {

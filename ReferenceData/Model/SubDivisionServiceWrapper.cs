@@ -5,33 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using ReferenceData.Model;
+using ReferenceData.Utils.Abstract;
+using ReferenceData.Utils.Concrete;
 
 namespace ReferenceData
 {
     public class SubDivisionServiceWrapper
     {
         ReferenceData.SubdivisionServiceReference.SubdivisionServiceClient subdivisionService;
-        //Dictionary<int, Subdivision> subdivisionDictionary;
+        private ICache<int, Subdivision> subdivisionCache = new MemoryCache<int, Subdivision>();
 
         public SubDivisionServiceWrapper()
         {
             subdivisionService = new ReferenceData.SubdivisionServiceReference.SubdivisionServiceClient();
-            //subdivisionDictionary = subdivisionService.GetItemsDictionary();
+            subdivisionCache.PutAll(subdivisionService.GetSubdivisions().Select(x => new KeyValuePair<int, Subdivision>(x.Id, x)));
         }
 
         public Subdivision GetItem(int id)
         {
-            //if (subdivisionDictionary.ContainsKey(id))
-            //    return subdivisionDictionary[id];
-
-            Subdivision subdivision = subdivisionService.GetSubdivisionById(id);
-            //subdivisionDictionary[id] = subdivision;
-            return subdivision;
+            return subdivisionCache.Get(id) ?? null;
         }
 
         public IEnumerable<Subdivision> GetItemsByCountryId(int id)
         {
-            return subdivisionService.GetItemsByCountryId(id);
+            return subdivisionCache.GetAll().Where(x => x.CountryId == id);
         }
 
     }

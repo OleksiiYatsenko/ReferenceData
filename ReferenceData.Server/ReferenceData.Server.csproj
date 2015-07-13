@@ -114,6 +114,10 @@
       <Project>{82dc8c3b-fd04-45ef-8d4e-95792f265497}</Project>
       <Name>ReferenceData.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ReferenceData.Utils\ReferenceData.Utils.csproj">
+      <Project>{066a3989-3591-477b-9bf1-f8a9ae61ff40}</Project>
+      <Name>ReferenceData.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReferenseData.Model\ReferenceData.Model.csproj">
       <Project>{1403f2f1-a876-4382-a376-2a2bbde329d8}</Project>
       <Name>ReferenceData.Model</Name>

@@ -5,39 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using ReferenceData.Model;
+using ReferenceData.Utils.Abstract;
+using ReferenceData.Utils.Concrete;
 
 namespace ReferenceData
 {
     public class LocationServiceWrapper
     {
         ReferenceData.LocationServiceReference.LocalServiceClient locationService;
-        //Dictionary<int, Location> locationDic;
+        private ICache<int, Location> locationCache = new MemoryCache<int, Location>();
 
         public LocationServiceWrapper()
         {
             locationService = new LocationServiceReference.LocalServiceClient();
-            //locationDic = new Dictionary<int, Location>();
-            //locationDic = locationService.GetItemsDictionary();
+            locationCache.PutAll(locationService.GetLocations().Select(x => new KeyValuePair<int, Location>(x.Id, x)));
         }
 
         public Location GetItem(int id)
         {
-            //if(locationDic.ContainsKey(id))
-            //{
-            //    return locationDic[id];
-            //}
-
-            Location loc = locationService.GetLocationById(id);
-            
-            //if(loc != null)
-            //    locationDic.Add(loc.Id, loc);
-            
-            return loc;
+            return locationCache.Get(id) ?? null;
         }
 
         public IEnumerable<Location> GetItemsBySubdivisionId(int id)
         {
-            return locationService.GetLocationsBySubdivisionId(id);
+            return locationCache.GetAll().Where(x => x.SubdivisionId == id);
         }
     }
 }

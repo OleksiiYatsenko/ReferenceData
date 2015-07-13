@@ -16,7 +16,7 @@ namespace ReferenceData
     /// </summary>
     public partial class App : Application
     {
-        //public static IUnityContainer Container { get; private set; }
+        public static IUnityContainer Container { get; private set; }
         public static DefaultMapConfig ConfigUser;
         public static DefaultMapConfig ConfigUserFullInfo;
 
@@ -26,20 +26,20 @@ namespace ReferenceData
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            //Container = new UnityContainer();
-            //Container.RegisterInstance<UsersService>(new UsersService());
-            //Container.RegisterInstance<LocationsService>(new LocationsService());
-            //Container.RegisterInstance<SubdivisionService>(new SubdivisionService());
-            //Container.RegisterInstance<CountriesService>(new CountriesService());
+            Container = new UnityContainer();
+            Container.RegisterInstance<UserServiceWrapper>(new UserServiceWrapper());
+            Container.RegisterInstance<LocationServiceWrapper>(new LocationServiceWrapper());
+            Container.RegisterInstance<SubDivisionServiceWrapper>(new SubDivisionServiceWrapper());
+            Container.RegisterInstance<CountryServiceWrapper>(new CountryServiceWrapper());
             InitializeConfigs();
             base.OnStartup(e);
         }
 
         private void InitializeConfigs()
         {
-            csw = new CountryServiceWrapper();
-            lsw = new LocationServiceWrapper();
-            ssw = new SubDivisionServiceWrapper();
+            csw = Container.Resolve<CountryServiceWrapper>();
+            lsw = Container.Resolve<LocationServiceWrapper>();
+            ssw = Container.Resolve<SubDivisionServiceWrapper>();
 
             ConfigUser = new DefaultMapConfig();
                 ConfigUserFullInfo = new DefaultMapConfig();

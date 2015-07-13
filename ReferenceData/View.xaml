@@ -12,7 +12,7 @@
             <RowDefinition Height="5*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" AutoGenerateColumns="False" Margin="15" ColumnWidth="*" ItemsSource="{Binding AsyncUser}" SelectedItem="{Binding CurrentUser}"
+        <DataGrid Grid.Row="0" AutoGenerateColumns="False" Margin="15" ColumnWidth="*" ItemsSource="{Binding Users}" SelectedItem="{Binding CurrentUser}"
                   VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.IsDeferredScrollingEnabled="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" IsReadOnly="True"/>
