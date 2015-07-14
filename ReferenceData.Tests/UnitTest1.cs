@@ -33,8 +33,5 @@ namespace ReferenceData.Tests
             Assert.IsNotNull(lsr.GetLocationById((int)list[0].LocationId), "Service haven't locations by subdivisions id");
             Assert.IsNotNull(lsr.GetLocationsBySubdivisionId((int)list[0].SubdivisionId), "Service haven't locations by location id");
         }
-
-        [TestMethod]
-        public void Test
     }
 }

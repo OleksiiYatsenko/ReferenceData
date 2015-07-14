@@ -86,14 +86,14 @@
     <Compile Include="Converters\NullableIntToIntConverter.cs" />
     <Compile Include="Model\NotificationEntity.cs" />
     <Compile Include="Model\ValidationEntity.cs" />
-    <Compile Include="Model\CountryServiceWrapper.cs" />
-    <Compile Include="Model\LocationServiceWrapper.cs" />
-    <Compile Include="Model\SubDivisionServiceWrapper.cs" />
+    <Compile Include="Services\CachingCountryService.cs" />
+    <Compile Include="Services\CachingLocationService.cs" />
+    <Compile Include="Services\CachingSubdivisionService.cs" />
     <Compile Include="Model\UserFullInfo.cs" />
-    <Compile Include="Model\UserServiceWrapper.cs" />
+    <Compile Include="Services\CachingUserService.cs" />
     <Compile Include="Provider\UserProvider.cs" />
     <Compile Include="Schedulers\BackgroundScheduler.cs" />
-    <Compile Include="Schedulers\DispatcherScheduler.cs" />
+    <Compile Include="Schedulers\MyDispatcherScheduler.cs" />
     <Compile Include="Service References\CountryServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
