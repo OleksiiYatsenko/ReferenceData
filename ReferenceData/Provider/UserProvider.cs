@@ -19,7 +19,7 @@ namespace ReferenceData
         static UserProvider()
         {
             UserServiceWrapper usw = App.Container.Resolve<UserServiceWrapper>();
-            users = new List<UserFullInfo>(usw.GetItemsForAsync());
+            users = new List<UserFullInfo>(usw.GetItems());
         }
 
         public UserProvider()
@@ -51,15 +51,15 @@ namespace ReferenceData
         {
             Trace.WriteLine("FetchRange: " + startIndex + "," + count);
             //Thread.Sleep(_fetchDelay);
-            lock (users)
+            List<UserFullInfo> list = new List<UserFullInfo>();
+
+            int range = startIndex + count;
+
+            for (int i = startIndex; i < range && i < users.Count; i++)
             {
-                List<UserFullInfo> list = new List<UserFullInfo>();
-                for (int i = startIndex; i < startIndex + count; i++)
-                {
-                    list.Add(users[i]);
-                }
-                return list;
+                list.Add(users[i]);
             }
+            return list;
         }
     }
 }

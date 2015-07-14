@@ -16,38 +16,38 @@
             <Setter Property="ListView.View">
                 <Setter.Value>
                     <GridView>
-                        <GridViewColumn Header="First Name" Width="100">
+                        <GridViewColumn Header="First Name" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding FirstName}"/>
+                                    <TextBlock Text="{Binding FirstName}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Second Name" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding SecondName}"/>
+                                    <TextBlock Text="{Binding SecondName}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Country" Width="150">
+                        <GridViewColumn Header="Country" Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Country.Description}"/>
+                                    <TextBlock Text="{Binding Country.Description}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Subdivision" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Subdivision.Description}"/>
+                                    <TextBlock Text="{Binding Subdivision.Description}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Location" Width="150">
+                        <GridViewColumn Header="Location" Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Location.Description}"/>
+                                    <TextBlock Text="{Binding Location.Description}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
