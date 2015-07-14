@@ -7,6 +7,9 @@ using VirtualizationCollections;
 using Microsoft.Practices.Unity;
 using System.Threading;
 using System.Diagnostics;
+using ReferenceData.UserServiceReference;
+using EmitMapper;
+using ReferenceData.Model;
 
 namespace ReferenceData
 {
@@ -18,8 +21,8 @@ namespace ReferenceData
 
         static UserProvider()
         {
-            UserServiceWrapper usw = App.Container.Resolve<UserServiceWrapper>();
-            users = new List<UserFullInfo>(usw.GetItems());
+            IUsersService usw = App.Container.Resolve<IUsersService>();
+            users = new List<UserFullInfo>(usw.GetUsers().Select(x => ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(x)));
         }
 
         public UserProvider()
@@ -51,15 +54,15 @@ namespace ReferenceData
         {
             Trace.WriteLine("FetchRange: " + startIndex + "," + count);
             //Thread.Sleep(_fetchDelay);
-            List<UserFullInfo> list = new List<UserFullInfo>();
+                List<UserFullInfo> list = new List<UserFullInfo>();
 
             int range = startIndex + count;
 
             for (int i = startIndex; i < range && i < users.Count; i++)
-            {
-                list.Add(users[i]);
+                {
+                    list.Add(users[i]);
+                }
+                return list;
             }
-            return list;
         }
     }
-}

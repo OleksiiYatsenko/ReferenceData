@@ -18,31 +18,21 @@ namespace ReferenceData.Server
     public class UserService : IUsersService
     {
         private UsersService usrSrw = Container.Instance.UnityContainer.Resolve<UsersService>();
-        private ICache<int, Model.User> usersCache = new MemoryCache<int, Model.User>();
-
-        public UserService()
-        {
-            usersCache.PutAll(usrSrw.GetItems().Select(x => new KeyValuePair<int, Model.User>(x.Id, MapEntityToUser(x))));
-        }
 
         public List<Model.User> GetUsers()
         {
-            return usersCache.GetAll().ToList();
+            return usrSrw.GetItems().Select(x => MapEntityToUser(x)).ToList();
         }
 
         public Model.User AddOrUpdate(Model.User usr)
         {
             User user = usrSrw.AddOrUpdate(MapUserToEntity(usr));
-            usersCache.Put(user.Id, MapEntityToUser(user));
-            return usersCache.Get(user.Id);
+            return MapEntityToUser(user);
         }
 
         public Model.User GetItem(int id)
         {
-            if (!usersCache.Contains(id))
-                usersCache.Put(id, MapEntityToUser(usrSrw.GetItem(id)));
-
-            return usersCache.Get(id);
+            return MapEntityToUser((usrSrw.GetItem(id)));
         }
 
         private User MapUserToEntity(Model.User usr)

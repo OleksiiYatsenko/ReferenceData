@@ -16,29 +16,20 @@ namespace ReferenceData.Server
     public class LocalService : ILocalService
     {
         private LocationsService locSrv = Container.Instance.UnityContainer.Resolve<LocationsService>();
-        private ICache<int, Model.Location> locationCache = new MemoryCache<int, Model.Location>();
-
-        public LocalService()
-        {
-            locationCache.PutAll(locSrv.GetItems().Select(x => new KeyValuePair<int, Model.Location>(x.Id, MapEntityToLocation(x))));
-        }
 
         public List<Model.Location> GetLocations()
         {
-            return locationCache.GetAll().ToList();
+            return locSrv.GetItems().Select(x => MapEntityToLocation(x)).ToList();
         }
 
         public Model.Location GetLocationById(int id)
         {
-            if (!locationCache.Contains(id))
-                locationCache.Put(id, MapEntityToLocation(locSrv.GetItem(id)));
-
-            return locationCache.Get(id);
+            return MapEntityToLocation(locSrv.GetItem(id));
         }
 
         public List<Model.Location> GetLocationsBySubdivisionId(int id)
         {
-            return locationCache.GetAll().Where(x => x.SubdivisionId == id).ToList();
+            return locSrv.GetLocationsBySubdivisionId(id).Select(x => MapEntityToLocation(x)).ToList();
         }
 
         private Model.Location MapEntityToLocation(Location loc)
