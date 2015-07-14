@@ -75,19 +75,19 @@ namespace ReferenceData.ViewModel
 
         //private UserProvider userP;
 
-        //private AsyncVirtualizingCollection<UserFullInfo> _AsyncUser;
-        //public AsyncVirtualizingCollection<UserFullInfo> AsyncUser
-        //{
-        //    get { return _AsyncUser; }
-        //    set
-        //    {
-        //        if(_AsyncUser != value)
-        //        {
-        //            _AsyncUser = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
+        private AsyncVirtualizingCollection<UserFullInfo> _AsyncUser;
+        public AsyncVirtualizingCollection<UserFullInfo> AsyncUser
+        {
+            get { return _AsyncUser; }
+            set
+            {
+                if(_AsyncUser != value)
+                {
+                    _AsyncUser = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Commands
@@ -99,12 +99,13 @@ namespace ReferenceData.ViewModel
         #region Constructor
         public ViewModel()
         {
-            // userP = new UserProvider(100);
-            // AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP);
-
             Users = new ObservableCollection<UserFullInfo>();
 
             Countries = new ObservableCollection<Country>(countryService.GetItems());
+
+            UserProvider userP = new UserProvider();
+            //AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP, 100, 30);
+            AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP, 100, 30000);
 
             var usersObservable = userService.GetItems().ToObservable();
             usersObservable.SubscribeOn(new BackgroundScheduler()).ObserveOn(new DispatcherScheduler(Dispatcher.CurrentDispatcher)).Subscribe(userInfo => Users.Add(userInfo));
@@ -118,7 +119,7 @@ namespace ReferenceData.ViewModel
                 x.SubdivisionSubject.OnNext(x.Subdivision);
             });
 
-            var countrySubj = new Subject<UserFullInfo>();
+            //var countrySubj = new Subject<UserFullInfo>();
         
             currentUser = new UserFullInfo();
 

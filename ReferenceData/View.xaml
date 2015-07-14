@@ -6,11 +6,68 @@
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="lvStyle" TargetType="{x:Type ListView}">
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ListView.ItemsSource" Value="{Binding AsyncUser}"/>
+            <Setter Property="SelectedItem" Value="{Binding CurrentUser}"/>
+            <Setter Property="ListView.View">
+                <Setter.Value>
+                    <GridView>
+                        <GridViewColumn Header="First Name" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FirstName}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Second Name" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding SecondName}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Country" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Country.Description}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Subdivision" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Subdivision.Description}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Location" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Location.Description}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="ListView.Cursor" Value="Wait"/>
+                    <Setter Property="ListView.Background" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
         <DataGrid Grid.Row="0" AutoGenerateColumns="False" Margin="15" ColumnWidth="*" ItemsSource="{Binding Users}" SelectedItem="{Binding CurrentUser}"
                   VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.IsDeferredScrollingEnabled="True">
@@ -34,7 +91,6 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 
                 <Label Content="First Name" Grid.Column="0" Grid.Row="0"/>
@@ -51,9 +107,6 @@
                 <ComboBox Grid.Column="1" Grid.Row="3" MaxHeight="25" VerticalAlignment="Top" ItemsSource="{Binding AvailableSubdivisions}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedItem="{Binding CurrentUser.Subdivision, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Location" Grid.Column="0" Grid.Row="4"/>
                 <ComboBox Grid.Column="1" Grid.Row="4" MaxHeight="25" VerticalAlignment="Top" ItemsSource="{Binding AvailableLocations}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedItem="{Binding CurrentUser.Location, UpdateSourceTrigger=PropertyChanged}"/>
-                <VirtualizingStackPanel Grid.Column="1" Grid.Row="5">
-                    <ComboBox Grid.Column="1" Grid.Row="5" MaxHeight="25" VerticalAlignment="Top" ItemsSource="{Binding strTestColl}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"/>
-                </VirtualizingStackPanel>
         </Grid>
         </GroupBox>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
@@ -77,5 +130,6 @@
             </Button>
             <Button Content="Cancel" Margin="10" Command="{Binding CloseComman}"/>
         </StackPanel>
+        <ListView Grid.Row="4" Margin="5" Style="{DynamicResource lvStyle}"/>
     </Grid>
 </Window>

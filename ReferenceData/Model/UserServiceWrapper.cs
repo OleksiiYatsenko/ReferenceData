@@ -35,5 +35,17 @@ namespace ReferenceData
 
             }
         }
+
+        public IEnumerable<UserFullInfo>GetItemsForAsync()
+        {
+            IEnumerable<User> users = userService.GetUsers();
+            List<UserFullInfo> usf = new List<UserFullInfo>();
+            foreach (User usr in users)
+            {
+                //yield return ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(usr);
+                usf.Add(ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(usr));
+            }
+            return usf;
+        }
     }
 }

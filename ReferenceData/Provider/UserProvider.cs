@@ -4,19 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VirtualizationCollections;
+using Microsoft.Practices.Unity;
+using System.Threading;
+using System.Diagnostics;
 
 namespace ReferenceData
 {
     public class UserProvider : IItemsProvider<UserFullInfo>
     {
         private readonly int _count;
-        private List<UserFullInfo> users;
+        private readonly int _fetchDelay;
+        private static readonly List<UserFullInfo> users;
 
-        public UserProvider(int count)
+        static UserProvider()
         {
-            _count = count;
-            UserServiceWrapper usw = new UserServiceWrapper();
-            users = new List<UserFullInfo>(usw.GetItems());
+            UserServiceWrapper usw = App.Container.Resolve<UserServiceWrapper>();
+            users = new List<UserFullInfo>(usw.GetItemsForAsync());
+        }
+
+        public UserProvider()
+        {
+            //_count = count;
+
+            _count = users.Count;
+            _fetchDelay = 1000;
         }
 
         /// <summary>
@@ -25,7 +36,7 @@ namespace ReferenceData
         /// <returns></returns>
         public int FetchCount()
         {
-            //Trace.WriteLine("FetchCount");
+            Trace.WriteLine("FetchCount");
             //Thread.Sleep(_fetchDelay);
             return _count;
         }
@@ -38,12 +49,17 @@ namespace ReferenceData
         /// <returns></returns>
         public IList<UserFullInfo> FetchRange(int startIndex, int count)
         {
-            List<UserFullInfo> list = new List<UserFullInfo>();
-            for (int i = startIndex; i < startIndex + count; i++)
+            Trace.WriteLine("FetchRange: " + startIndex + "," + count);
+            //Thread.Sleep(_fetchDelay);
+            lock (users)
             {
-                list.Add(users[i]);
+                List<UserFullInfo> list = new List<UserFullInfo>();
+                for (int i = startIndex; i < startIndex + count; i++)
+                {
+                    list.Add(users[i]);
+                }
+                return list;
             }
-            return list;
         }
     }
 }
