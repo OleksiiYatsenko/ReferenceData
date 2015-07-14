@@ -10,15 +10,15 @@ using System.Windows.Threading;
 
 namespace ReferenceData
 {
-    class DispatcherScheduler : IScheduler
+    class MyDispatcherScheduler : IScheduler
     {
         private readonly Dispatcher dispatcher;
 
-        public DispatcherScheduler(Dispatcher dispatcher)
+        public MyDispatcherScheduler(Dispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
         }
-        public DispatcherScheduler()
+        public MyDispatcherScheduler()
         { }
 
         public DateTimeOffset Now

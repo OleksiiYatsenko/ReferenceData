@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Linq;
 using System.Windows.Input;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
@@ -11,6 +12,12 @@ using Microsoft.Practices.Unity;
 using System.Reactive.Subjects;
 using ReferenceData.Model;
 using VirtualizationCollections;
+using ReferenceData.UserServiceReference;
+using ReferenceData.CountryServiceReference;
+using ReferenceData.SubdivisionServiceReference;
+using ReferenceData.LocationServiceReference;
+using EmitMapper;
+using System.Threading.Tasks;
 
 
 namespace ReferenceData.ViewModel
@@ -18,10 +25,10 @@ namespace ReferenceData.ViewModel
     public class ViewModel : NotificationEntity
     {
         #region Fields
-        private UserServiceWrapper userService = App.Container.Resolve<UserServiceWrapper>();
-        private CountryServiceWrapper countryService = App.Container.Resolve<CountryServiceWrapper>();
-        private SubDivisionServiceWrapper subdivisionService = App.Container.Resolve<SubDivisionServiceWrapper>();
-        private LocationServiceWrapper locationService = App.Container.Resolve<LocationServiceWrapper>();
+        private IUsersService userService = App.Container.Resolve<IUsersService>();
+        private ICountryService countryService = App.Container.Resolve<ICountryService>();
+        private ISubdivisionService subdivisionService = App.Container.Resolve<ISubdivisionService>();
+        private ILocalService locationService = App.Container.Resolve<ILocalService>();
 
         private ISubject<UserFullInfo> userSubject;
 
@@ -104,10 +111,19 @@ namespace ReferenceData.ViewModel
 
             Users = new ObservableCollection<UserFullInfo>();
 
-            Countries = new ObservableCollection<Country>(countryService.GetItems());
+            Countries = new ObservableCollection<Country>(countryService.GetCountries());
 
-            var usersObservable = userService.GetItems().ToObservable();
-            usersObservable.SubscribeOn(new BackgroundScheduler()).ObserveOn(new DispatcherScheduler(Dispatcher.CurrentDispatcher)).Subscribe(userInfo => Users.Add(userInfo));
+            userService.GetUsersAsync().ContinueWith(taskResult => 
+            {
+                var userCollection = taskResult.Result;
+                foreach (var user in userCollection) Users.Add(ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(user)); 
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+
+            //var usersObservable = userService.GetUsers().ToObservable();
+            //usersObservable.SubscribeOn(TaskPoolScheduler.Default).ObserveOn(DispatcherScheduler.Current).Subscribe(user =>
+            //{
+            //    Users.Add(ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(user));
+            //});
 
             userSubject = new Subject<UserFullInfo>();
             userSubject.Subscribe(x =>
@@ -139,7 +155,7 @@ namespace ReferenceData.ViewModel
         private void FillLocations(Subdivision subdivision)
         {
             if (subdivision == null) return;
-            AvailableLocations = new ObservableCollection<Location>(locationService.GetItemsBySubdivisionId(subdivision.Id));
+            AvailableLocations = new ObservableCollection<Location>(locationService.GetLocationsBySubdivisionId(subdivision.Id));
         }
         private void NewMethod()
         {
@@ -148,7 +164,9 @@ namespace ReferenceData.ViewModel
 
         private void SaveMethod()
         {
-            CurrentUser = userService.AddOrUpdate(CurrentUser);
+            var u = ObjectMapperManager.DefaultInstance.GetMapper<UserFullInfo, User>(App.ConfigUserFullInfo).Map(CurrentUser);
+            var user = userService.AddOrUpdate(u);
+            CurrentUser = ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(user);
 
             if (CurrentUser != null)
             {

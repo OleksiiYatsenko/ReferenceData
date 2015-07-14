@@ -1,13 +1,13 @@
 ﻿using EmitMapper.MappingConfiguration;
 using Microsoft.Practices.Unity;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using ReferenceData.Model;
+using ReferenceData.UserServiceReference;
+using ReferenceData.Service;
+using ReferenceData.LocationServiceReference;
+using ReferenceData.Services;
+using ReferenceData.SubdivisionServiceReference;
+using ReferenceData.CountryServiceReference;
 
 namespace ReferenceData
 {
@@ -20,26 +20,26 @@ namespace ReferenceData
         public static DefaultMapConfig ConfigUser;
         public static DefaultMapConfig ConfigUserFullInfo;
 
-        private static CountryServiceWrapper csw;
-        private static LocationServiceWrapper lsw;
-        private static SubDivisionServiceWrapper ssw;
+        private static ICountryService csw;
+        private static ILocalService lsw;
+        private static ISubdivisionService ssw;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             Container = new UnityContainer();
-            Container.RegisterInstance<UserServiceWrapper>(new UserServiceWrapper());
-            Container.RegisterInstance<LocationServiceWrapper>(new LocationServiceWrapper());
-            Container.RegisterInstance<SubDivisionServiceWrapper>(new SubDivisionServiceWrapper());
-            Container.RegisterInstance<CountryServiceWrapper>(new CountryServiceWrapper());
+            Container.RegisterInstance<IUsersService>(new CachingUserService(new UsersServiceClient()));
+            Container.RegisterInstance<ILocalService>(new CachingLocationService(new LocalServiceClient()));
+            Container.RegisterInstance<ISubdivisionService>(new CachingSubdivisionService(new SubdivisionServiceClient()));
+            Container.RegisterInstance<ICountryService>(new CachingCountryService(new CountryServiceClient()));
             InitializeConfigs();
             base.OnStartup(e);
         }
 
         private void InitializeConfigs()
         {
-            csw = Container.Resolve<CountryServiceWrapper>();
-            lsw = Container.Resolve<LocationServiceWrapper>();
-            ssw = Container.Resolve<SubDivisionServiceWrapper>();
+            csw = Container.Resolve<ICountryService>();
+            lsw = Container.Resolve<ILocalService>();
+            ssw = Container.Resolve<ISubdivisionService>();
 
             ConfigUser = new DefaultMapConfig();
                 ConfigUserFullInfo = new DefaultMapConfig();
@@ -60,9 +60,9 @@ namespace ReferenceData
                         Id = usr.Id,
                         FirstName = usr.FirstName,
                         SecondName = usr.SecondName,
-                        Country = csw.GetItem(usr.CountryId),
-                        Subdivision = usr.SubdivisionId != null ? ssw.GetItem((int)usr.SubdivisionId) : null,
-                        Location = usr.LocationId != null ? lsw.GetItem((int)usr.LocationId) : null
+                        Country = csw.GetCountryById(usr.CountryId),
+                        Subdivision = usr.SubdivisionId != null ? ssw.GetSubdivisionById((int)usr.SubdivisionId) : null,
+                        Location = usr.LocationId != null ? lsw.GetLocationById((int)usr.LocationId) : null
                         
                     });
         }

@@ -16,24 +16,15 @@ namespace ReferenceData.Server
     public class CountryService : ICountryService
     {
         private CountriesService countrySrw = Container.Instance.UnityContainer.Resolve<CountriesService>();
-        private ICache<int, Model.Country> countryCache = new MemoryCache<int, Model.Country>();
-
-        public CountryService()
-        {
-            countryCache.PutAll(countrySrw.GetItems().Select(x => new KeyValuePair<int, Model.Country>(x.Id, MapEntityToCountry(x))));
-        }
 
         public List<Model.Country> GetCountries()
         {
-            return countryCache.GetAll().ToList();
+            return countrySrw.GetItems().Select(x => MapEntityToCountry(x)).ToList();
         }
 
         public Model.Country GetCountryById(int id)
         {
-            if (!countryCache.Contains(id))
-                countryCache.Put(id, MapEntityToCountry(countrySrw.GetItem(id)));
-
-            return countryCache.Get(id);
+            return MapEntityToCountry(countrySrw.GetItem(id));
         }
 
         private Model.Country MapEntityToCountry(Country country)
