@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="ReferenceData.Content"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ReferenceData.ViewModel"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:converters="clr-namespace:ReferenceData.Converters"
+        xmlns:my="clr-namespace:ReferenceData" >
+    <UserControl.DataContext>
+        <local:ViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:MultiValueBoolConverter x:Key="MultiValueBoolConverter" />
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <Style x:Key="lvStyle" TargetType="{x:Type ListView}">
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ListView.ItemsSource" Value="{Binding AsyncUser}"/>
+            <Setter Property="SelectedItem" Value="{Binding CurrentUser}"/>
+            <Setter Property="ListView.View">
+                <Setter.Value>
+                    <GridView>
+                        <GridViewColumn Header="First Name" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FirstName}" TextAlignment="Center" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Second Name" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding SecondName}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Country" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Country.Description}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Subdivision" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Subdivision.Description}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Location" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Location.Description}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="ListView.Cursor" Value="Wait"/>
+                    <Setter Property="ListView.Background" Value="LightGray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0" AutoGenerateColumns="False" Margin="15" ColumnWidth="*" ItemsSource="{Binding Users}" SelectedItem="{Binding CurrentUser}"
+                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.IsDeferredScrollingEnabled="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Second Name" Binding="{Binding SecondName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Country" Binding="{Binding Country.Description}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Subdivision" Binding="{Binding Subdivision.Description}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Location" Binding="{Binding Location.Description}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <GroupBox Grid.Row="1" Header="Details" Margin="15" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition MaxWidth="150"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="First Name" Grid.Column="0" Grid.Row="0" Margin="5"/>
+                <TextBox x:Name="firstNameTextBox" Grid.Column="1" Grid.Row="0" MaxHeight="25" VerticalAlignment="Top" Text="{Binding CurrentUser.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+                <Label Content="Second Name" Grid.Column="0" Grid.Row="1" Margin="5"/>
+                <TextBox x:Name="secondNameTextBox" Grid.Column="1" Grid.Row="1" MaxHeight="25" VerticalAlignment="Top" Text="{Binding CurrentUser.SecondName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+                <Label Content="Country" Grid.Column="0" Grid.Row="2" Margin="5"/>
+                <ComboBox x:Name="countryComboBox" Grid.Column="1" Grid.Row="2" MaxHeight="25" VerticalAlignment="Top" my:ComboBoxMaxCount.MaxDropDownItems="10"
+                      ItemsSource="{Binding Countries}" 
+                      DisplayMemberPath="Description" 
+                      SelectedValuePath="Id" 
+                      SelectedItem="{Binding CurrentUser.Country, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                <Label Content="Subdivisions" Grid.Column="0" Grid.Row="3" Margin="5"/>
+                <ComboBox Grid.Column="1" Grid.Row="3" MaxHeight="25" VerticalAlignment="Top" my:ComboBoxMaxCount.MaxDropDownItems="10" ItemsSource="{Binding AvailableSubdivisions}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedItem="{Binding CurrentUser.Subdivision, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Location" Grid.Column="0" Grid.Row="4" Margin="5"/>
+                <ComboBox Grid.Column="1" Grid.Row="4" MaxHeight="25" VerticalAlignment="Top" ItemsSource="{Binding AvailableLocations}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedItem="{Binding CurrentUser.Location, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Content="New" Margin="15,10,10,10" Command="{Binding NewCommand}"/>
+            <Button Content="Save" Margin="10" Command="{Binding SaveCommand}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultiValueBoolConverter}">
+                        <Binding ElementName="firstNameTextBox" Path="(Validation.HasError)" Converter="{StaticResource InverseBoolConverter}" />
+                        <Binding ElementName="secondNameTextBox" Path="(Validation.HasError)" Converter="{StaticResource InverseBoolConverter}" />
+                        <Binding ElementName="countryComboBox" Path="(Validation.HasError)" Converter="{StaticResource InverseBoolConverter}" />
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Content="Cancel" Margin="10" Command="{Binding CloseComman}"/>
+        </StackPanel>
+        <ListView Grid.Row="4" Margin="5" Style="{DynamicResource lvStyle}"/>
+        
+    </Grid>
+</UserControl>

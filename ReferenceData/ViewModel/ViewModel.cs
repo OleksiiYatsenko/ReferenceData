@@ -120,7 +120,7 @@ namespace ReferenceData.ViewModel
             AsyncUser = new AsyncVirtualizingCollection<UserFullInfo>(userP, 100, 30000);
 
             var usersObservable = userService.GetUsers().ToObservable();
-            usersObservable.SubscribeOn(new BackgroundScheduler()).ObserveOn(new DispatcherScheduler(Dispatcher.CurrentDispatcher)).Subscribe(userInfo => Users.Add(userInfo));
+            usersObservable.SubscribeOn(ThreadPoolScheduler.Instance).ObserveOn(DispatcherScheduler.Current).Subscribe(userInfo => Users.Add(userInfo));
 
             userSubject = new Subject<UserFullInfo>();
             userSubject.Subscribe(x =>

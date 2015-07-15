@@ -14,9 +14,9 @@ using System.Windows.Shapes;
 
 namespace ReferenceData
 {
-    public partial class MainWindow : Window
+    public partial class Content
     {
-        public MainWindow()
+        public Content()
         {
             InitializeComponent();
         }

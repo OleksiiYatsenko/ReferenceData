@@ -111,9 +111,9 @@ namespace ReferenceData
         #region Constructors
         static UserFullInfo() 
         {
-            RegisterValidator(x => x.FirstName, x => !string.IsNullOrEmpty(x.FirstName), "EROOOROROORORO");
-            RegisterValidator(x => x.SecondName, x => !string.IsNullOrEmpty(x.SecondName), "EROOOROROORORO");
-            RegisterValidator(x => x.Country, x => x.Country != null, "EROOOROROORORO");
+            RegisterValidator(x => x.FirstName, x => !string.IsNullOrEmpty(x.FirstName), "Please, enter the first name");
+            RegisterValidator(x => x.SecondName, x => !string.IsNullOrEmpty(x.SecondName), "Please, enter the second name");
+            RegisterValidator(x => x.Country, x => x.Country != null, "Please, select a country");
         }
 
         public UserFullInfo()
