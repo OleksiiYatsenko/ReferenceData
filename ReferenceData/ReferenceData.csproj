@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ComboBoxMaxCount.cs" />
     <Compile Include="Converters\NullableIntToIntConverter.cs" />
     <Compile Include="Model\NotificationEntity.cs" />
     <Compile Include="Model\ValidationEntity.cs" />
