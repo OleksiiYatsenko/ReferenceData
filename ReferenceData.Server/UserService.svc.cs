@@ -50,15 +50,17 @@ namespace ReferenceData.Server
 
         private Model.User MapEntityToUser(User usr)
         {
-            return new ReferenceData.Model.User
-            {
-                Id = usr.Id,
-                FirstName = usr.FirstName,
-                SecondName = usr.SecondName,
-                CountryId = usr.CountryId,
-                SubdivisionId = usr.SubDivisionId,
-                LocationId = usr.LocationId
-            };
+            return usr != null ?
+                new ReferenceData.Model.User
+                {
+                    Id = usr.Id,
+                    FirstName = usr.FirstName,
+                    SecondName = usr.SecondName,
+                    CountryId = usr.CountryId,
+                    SubdivisionId = usr.SubDivisionId,
+                    LocationId = usr.LocationId
+                }
+                : null;
         }
     }
 }

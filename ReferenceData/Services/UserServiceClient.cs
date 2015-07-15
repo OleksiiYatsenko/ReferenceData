@@ -27,7 +27,7 @@ namespace ReferenceData.Services
 
         public UserFullInfo AddOrUpdate(UserFullInfo user)
         {
-            User usr = ObjectMapperManager.DefaultInstance.GetMapper<UserFullInfo, User>(App.ConfigUserFullInfo).Map(user);
+            User usr = ObjectMapperManager.DefaultInstance.GetMapper<UserFullInfo, User>(App.ConfigUser).Map(user);
             usr = userService.AddOrUpdate(usr);
             return ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(usr);
         }

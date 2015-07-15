@@ -72,10 +72,13 @@ namespace ReferenceData.ViewModel
                 if (currentUser != value)
                 {
                     currentUser = value;
-                    
-                    currentUser.SubdivisionSubject.Subscribe(x => FillLocations(x));
-                    currentUser.CountrySubject.Subscribe(x => FillSubdivisions(x));
-                    userSubject.OnNext(currentUser);
+
+                    if (currentUser != null)
+                    {
+                        currentUser.SubdivisionSubject.Subscribe(x => FillLocations(x));
+                        currentUser.CountrySubject.Subscribe(x => FillSubdivisions(x));
+                        userSubject.OnNext(currentUser);
+                    }
 
                     OnPropertyChanged();
                 }
