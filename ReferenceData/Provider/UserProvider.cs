@@ -10,6 +10,7 @@ using System.Diagnostics;
 using ReferenceData.UserServiceReference;
 using EmitMapper;
 using ReferenceData.Model;
+using ReferenceData.Services.Abstract;
 
 namespace ReferenceData
 {
@@ -21,8 +22,8 @@ namespace ReferenceData
 
         static UserProvider()
         {
-            IUsersService usw = App.Container.Resolve<IUsersService>();
-            users = new List<UserFullInfo>(usw.GetUsers().Select(x => ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(x)));
+            IUserServiceClient usw = App.Container.Resolve<IUserServiceClient>();
+            users = new List<UserFullInfo>(usw.GetUsers());
         }
 
         public UserProvider()

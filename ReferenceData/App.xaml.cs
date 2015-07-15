@@ -8,6 +8,7 @@ using ReferenceData.LocationServiceReference;
 using ReferenceData.Services;
 using ReferenceData.SubdivisionServiceReference;
 using ReferenceData.CountryServiceReference;
+using ReferenceData.Services.Abstract;
 
 namespace ReferenceData
 {
@@ -31,6 +32,7 @@ namespace ReferenceData
             Container.RegisterInstance<ILocalService>(new CachingLocationService(new LocalServiceClient()));
             Container.RegisterInstance<ISubdivisionService>(new CachingSubdivisionService(new SubdivisionServiceClient()));
             Container.RegisterInstance<ICountryService>(new CachingCountryService(new CountryServiceClient()));
+            Container.RegisterInstance<IUserServiceClient>(new UserServiceClient(Container.Resolve<IUsersService>()));
             InitializeConfigs();
             base.OnStartup(e);
         }

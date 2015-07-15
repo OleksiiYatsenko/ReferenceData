@@ -22,23 +22,6 @@ namespace ReferenceData.Service
         {
             this.userService = userService;
         }
-
-        //public UserFullInfo AddOrUpdate(UserFullInfo user)
-        //{
-        //    User usr = userService.AddOrUpdate(ObjectMapperManager.DefaultInstance.GetMapper<UserFullInfo, User>(App.ConfigUser).Map(user));
-        //    return ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(usr);
-        //}
-
-        //public IEnumerable<UserFullInfo> GetItems()
-        //{
-        //    IEnumerable<User> users = userService.GetUsers();
-
-        //    foreach (User usr in users)
-        //    {
-        //        yield return ObjectMapperManager.DefaultInstance.GetMapper<User, UserFullInfo>(App.ConfigUserFullInfo).Map(usr);
-
-        //    }
-        //}
     
         public User[] GetUsers()
         {
@@ -55,6 +38,14 @@ namespace ReferenceData.Service
         public User AddOrUpdate(User user)
         {
             var newUser = userService.AddOrUpdate(user);
+            if (newUser == null)
+            {
+                // Update cache item
+                var updatedUser = userService.GetItem(user.Id);
+                usersCache.Put(updatedUser.Id.ToString(), updatedUser);
+                return null;
+            }
+
             usersCache.Put(newUser.Id.ToString(), newUser);
             return newUser;
         }
